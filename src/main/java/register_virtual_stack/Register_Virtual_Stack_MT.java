@@ -1034,48 +1034,48 @@ public class Register_Virtual_Stack_MT implements PlugIn
 			b.y -= commonBounds.y;
 		}
 
-		// Reopen all target images and repaint them on an enlarged canvas
-		exe = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		IJ.showStatus("Resizing images...");
-		ArrayList<Future<String>> names = new ArrayList<Future<String>>();
-		for (int i=0; i<sorted_file_names.length; i++) 
-		{
-			final Rectangle b = bounds[i];
-			names.add(exe.submit(resizeAndSaveImage(makeTargetPath(target_dir, sorted_file_names[i]), b.x, b.y, commonBounds.width, commonBounds.height)));
-		}
+		// // Reopen all target images and repaint them on an enlarged canvas
+		// exe = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		// IJ.showStatus("Resizing images...");
+		// ArrayList<Future<String>> names = new ArrayList<Future<String>>();
+		// for (int i=0; i<sorted_file_names.length; i++) 
+		// {
+		// 	final Rectangle b = bounds[i];
+		// 	names.add(exe.submit(resizeAndSaveImage(makeTargetPath(target_dir, sorted_file_names[i]), b.x, b.y, commonBounds.width, commonBounds.height)));
+		// }
 		
 
-		// Join all and create VirtualStack
-		final VirtualStack stack = new VirtualStack(commonBounds.width, commonBounds.height, null, target_dir);
-		ind = 0;
-		for (Iterator<Future<String>> it1 = names.iterator(); it1.hasNext(); ind++) {
-			String filename = null;
-			try {
-				IJ.showStatus("Resizing image " + (ind+1) + "/" + sorted_file_names.length);
-				filename = it1.next().get();
-				it1.remove(); // so list doesn't build up anywhere with Callable-s that have been called already.
-				System.gc();
-			} catch (InterruptedException e) {
-				IJ.error("Interruption exception!");
-				e.printStackTrace();
-				return false;
-			} catch (ExecutionException e) {
-				IJ.error("Execution exception!");
-				e.printStackTrace();
-				return false;
-			}
-			if (null == filename) {
-				IJ.log("Image failed: " + filename);
-				return false;
-			}
-			stack.addSlice(filename);
-		}
+		// // Join all and create VirtualStack
+		// final VirtualStack stack = new VirtualStack(commonBounds.width, commonBounds.height, null, target_dir);
+		// ind = 0;
+		// for (Iterator<Future<String>> it1 = names.iterator(); it1.hasNext(); ind++) {
+		// 	String filename = null;
+		// 	try {
+		// 		IJ.showStatus("Resizing image " + (ind+1) + "/" + sorted_file_names.length);
+		// 		filename = it1.next().get();
+		// 		it1.remove(); // so list doesn't build up anywhere with Callable-s that have been called already.
+		// 		System.gc();
+		// 	} catch (InterruptedException e) {
+		// 		IJ.error("Interruption exception!");
+		// 		e.printStackTrace();
+		// 		return false;
+		// 	} catch (ExecutionException e) {
+		// 		IJ.error("Execution exception!");
+		// 		e.printStackTrace();
+		// 		return false;
+		// 	}
+		// 	if (null == filename) {
+		// 		IJ.log("Image failed: " + filename);
+		// 		return false;
+		// 	}
+		// 	stack.addSlice(filename);
+		// }
 
-		names.clear();
-		exe.shutdown();
+		// names.clear();
+		// exe.shutdown();
 
-		// Show registered stack
-		new ImagePlus("Registered " + new File(source_dir).getName(), stack).show();
+		// // Show registered stack
+		// new ImagePlus("Registered " + new File(source_dir).getName(), stack).show();
 		
 		// Save transforms
 		if(save_dir != null)
